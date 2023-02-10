@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     })
     res.status(200).json(allCat)
   } catch (err) {
-    res.status(500)
+    res.status(500).json(err);
   }
   // be sure to include its associated Products
 });
@@ -19,6 +19,15 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   // find one category by its `id` value
   // be sure to include its associated Products
+  try {
+    const idCat = await Category.findByPk(req.params.id, {
+      include: [{ model: Product}],
+    })
+    res.status(500).json(idCat);
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
 });
 
 router.post('/', async (req, res) => {
@@ -54,7 +63,7 @@ router.delete('/:id', async (req, res) => {
       },
     });
     if(!deleteCat) {
-      res.status(404).json('no category with id beep bop boop')
+      res.status(404).json('no category with that id beep bop boop')
     }
     res.status(200).json(deleteCat)
   } catch (err) {
